@@ -1,4 +1,5 @@
-function [dataBlock, tic_filtered, fax_hz, N_2] = FFTDenoise(dataBlock,cutOut,keepResult,lowNotch,highNotch)
+function [dataBlock] = addNoiseFxn(dataBlock,cutOut,keepResult,lowNotch,highNotch,intent)
+
 %Please read LICENSE.md before using, and attribute Robin J. Abel, PhD using appropriate citation.
 %
 %Current Version 1.3, 2020-02-25
@@ -150,10 +151,23 @@ if exist('notchType','var') && strcmp(notchType, 'Surround signal')
     specdata_filtered = zeros([size(dataBlock.specdata)]);
     specdata_filtered(lowidx:highidx,:) = specdata_ffted(lowidx:highidx,:);
 else
-    tic_filtered = zeros(size(tic_ffted));
+    %tic_filtered = zeros(size(tic_ffted));
+
+    tic_filtered(1:size(tic_ffted, 1), 1:size(tic_ffted, 2)) = intent;
+    halfIndx = size(tic_ffted, 1)/2;
+    distToHalf = halfIndx - highidx;
+    lowIndx2 = highidx + 2*distToHalf;
+    highIndx2 = lowIndx2 + (highidx - lowidx);
+
     tic_filtered(1:lowidx) = tic_ffted(1:lowidx);
-    tic_filtered(highidx:end) = tic_ffted(highidx:end);
-    specdata_filtered = zeros([size(dataBlock.specdata)]);
+    tic_filtered((lowidx+3):lowIndx2) = tic_ffted((lowidx+3):lowIndx2);
+    tic_filtered((lowIndx2+3):end) = tic_ffted((lowIndx2+3):end);
+    %tic_filtered(highidx:lowIndx2) = tic_ffted(highidx:lowIndx2);
+    %tic_filtered(highIndx2:end) = tic_ffted(highIndx2:end);
+
+
+    %specdata_filtered = zeros([size(dataBlock.specdata)]);
+    specdata_filtered(1:size(dataBlock.specdata, 1), 1:size(dataBlock.specdata, 2)) = intent;
     specdata_filtered(1:lowidx,:) = specdata_ffted(1:lowidx,:);
     specdata_filtered(highidx:end,:) = specdata_ffted(highidx:end,:);
 end
@@ -194,5 +208,7 @@ if isempty(keepResult) == 0 && (keepResult == 'Y' || keepResult == 'y' || keepRe
     dataBlock.specdata = abs(ifft(specdata_filtered));
     dataBlock.denoised = 'FFT';
 end
+
+
 
 end

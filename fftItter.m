@@ -1,4 +1,4 @@
-function [dataOut] = fftItter(dataIn, lowNotch, highNotch, numbIter)
+function [dataOut] = fftItter(dataIn, notches, itter)
 
 %first want to see if the data loaded in is a peg file or just a csv
 %its going to be better to take in a structure always I think
@@ -8,6 +8,67 @@ function [dataOut] = fftItter(dataIn, lowNotch, highNotch, numbIter)
 %contains a single dimension (could accept FID or VUV data).
 
 %next want to put the data into FFTDenoise
+
+%call uploaded data pegStr
+pegStr = dataIn;
+
+%I wanted a waitbar
+f = waitbar(0/itter, 'Starting Denoising. Please be patient.');
+%pause it to start
+pause(1.2);
+
+%dispDataPrior
+%dispDataPrior;
+
+%get the low and high notches from the notches var
+lowNotches = notches(1:2:end);
+highNotches = notches(2:2:end);
+
+%make sure all are vertical
+if size(highNotches, 2) > size(highNotches, 1)
+
+    %transpose both
+    highNotches = highNotches';
+    lowNotches = lowNotches';
+
+end
+
+%sanity check on the notches
+if size(lowNotches) ~= size(highNotches)
+
+    errNotches = msgbox("Notches variable formatted incorrectly. Please check documentation in README.","Error","error");
+
+end
+
+szNotches = size(highNotches, 1);
+
+for j = 1:szNotches
+
+    %get the notches for particular itteration
+    lowNotch = lowNotches(j);
+    highNotch = highNotches(j);
+
+    %literally the waitbar
+    f = waitbar(j/szNotches, f, 'Denoising Data with FFT');
+
+    for i = 1:itter
+        
+        %loop over the FFTDenoise Function
+        [pegStr, tic_filtered, fax_hz, N_2] = FFTDenoise(pegStr, 1, 1, lowNotch, highNotch);
+    
+    end
+
+end
+
+waitbar(1, f, 'Finishing Up Denoising');
+pause(1);
+close(f);
+
+%save the data as dataOut
+dataOut = pegStr;
+
+%display the data
+%displayData;
 
 %next want to loop over the FFTDenoise function as many times as requested
 %by numbIter
