@@ -42,10 +42,43 @@ function [dataBlock] = FFTDenoise(dataBlock,cutOut,keepResult,lowNotch,highNotch
 %   corrected residual plotting when keepResult is enabled. This allows
 %   silent calling from within functions remain silent when desired.
 
-%   Perform FFT on TIC & spectral data
-tic_ffted = fft(dataBlock.tic);
-for page = 1:size(dataBlock.specdata,2)
-    specdata_ffted(:,page) = fft(dataBlock.specdata(:,page));
+
+
+%need to separate the data
+if isa(dataBlock, 'struct')
+
+    %Perform FFT on TIC & spectral data
+    %just perform the FFT as usual
+    tic_ffted = fft(dataBlock.tic);
+    for page = 1:size(dataBlock.specdata,2)
+        specdata_ffted(:,page) = fft(dataBlock.specdata(:,page));
+    end
+
+elseif isa(dataBlock, 'double')
+    
+    %generate a TIC
+    ticData = sum(dataBlock, 2);
+
+    %gotta clear the dataBlock var
+    FullSpecData = dataBlock;
+    clear dataBlock;
+    
+    %I am lazy so just make the exact same structure.
+    dataBlock.tic = ticData;
+    dataBlock.specdata = FullSpecData;
+
+    %%%%NEEED TO FIX%%%%
+    %The scan rate of the instrument needs to be known for other data
+    %perhaps require the user to input data as a structure...
+    %for now assume the datarate is 100Hz for a quad (pretty quick)
+    dataBlock.dataRate = 100;
+    
+    %do the same as before
+    tic_ffted = fft(dataBlock.tic);
+    for page = 1:size(dataBlock.specdata,2)
+        specdata_ffted(:,page) = fft(dataBlock.specdata(:,page));
+    end
+
 end
 
 N = length(dataBlock.tic);
