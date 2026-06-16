@@ -28,7 +28,7 @@ function [specDataFFT] = butterGC(fs, curData, notches, bandWidth, ordr)
     %specDataFFT = zeros(size(specData, 1), size(specData, 2));
 
     %need to make edges vector
-    upLim = zeros(1, length(notches));
+    upLim = zeros(1, length(notches)); %row vectors
     dwnLim = zeros(1, length(notches));
 
     for i = 1:length(notches)
@@ -38,7 +38,8 @@ function [specDataFFT] = butterGC(fs, curData, notches, bandWidth, ordr)
 
     end
 
-    edges = sort([upLim dwnLim]);
+    edges = sort([upLim dwnLim]); %horizontal concat and 
+    % sorts into ascending order
 
     i = 1;
     j = 2;
@@ -51,15 +52,17 @@ function [specDataFFT] = butterGC(fs, curData, notches, bandWidth, ordr)
     
         %filter design
         Wn = curEdg/(fs/2); %passband egde frequencies
+        %^ normalizes to Nyquist frequency
         [b,a] = butter(ordr, Wn, 'stop'); %build butterworth filter
+        % use stop because want a stopband; ie don't let some freq. thru.
     
         %ticData = filtfilt(b, a, ticData); % zero-phase filtering to avoid phase distortion
 
         %to go over specdata
         for k = 1:size(specData, 2)
         
-            specData(:,k) = filtfilt(b, a, specData(:,k));
-
+            specData(:,k) = filtfilt(b, a, specData(:,k)); 
+% apply butterworth column by column
         end
 
         i = i + 2;

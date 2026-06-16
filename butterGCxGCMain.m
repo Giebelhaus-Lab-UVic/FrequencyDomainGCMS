@@ -25,7 +25,7 @@
 
         [specDataFFT] = butterGC(fs, curMod, notches, bandWidth, ordr);
 
-        specDataOut = [specDataOut specDataFFT]; %#ok
+        specDataOut = [specDataOut; specDataFFT]; 
 
     end
     
@@ -33,7 +33,7 @@
     dataOut = dataIn;
 
     %just doing this to get the tensor out
-    dataIn.specdata = specDataOut;
+    dataIn.specdata = specDataOut; 
     
     %new tensor
     [tensorFFT] = makeTensor(dataIn);
