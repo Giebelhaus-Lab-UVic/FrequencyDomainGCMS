@@ -12,68 +12,76 @@
 
 %edges = vector of start and stop of each notch region in Hz.
 
-function [specDataFFT] = butterGC(fs, curData, notches, bandWidth, ordr)
+function [specDataFFT] = butterGC(fs,specData,stop,less,edges,bandWidth,ordr,cutoff)
     
-    %only works for TIC right now, will just expand this sub function to
-    %apply to specdata in the near future
+%only works for TIC right now, will just expand this sub function to
+%apply to specdata in the near future
 
-    %get vars from the input structure
-    %fs = dataIn.dataRate; %sampling frequency (Hz)
-    %t = 0:1/fs:(size(curData,1)/fs); %time vector
-    %t(length(t)) = [];
-    %pull out the tic
-    %ticData = sum(curMod, 2);
-    specData = curData;
-    %dataOut = dataIn;
-    %specDataFFT = zeros(size(specData, 1), size(specData, 2));
+%get vars from the input structure
+%fs = dataIn.dataRate; %sampling frequency (Hz)
+%t = 0:1/fs:(size(curData,1)/fs); %time vector
+%t(length(t)) = [];
+%pull out the tic
+%ticData = sum(curMod, 2);
+%dataOut = dataIn;
+%specDataFFT = zeros(size(specData, 1), size(specData, 2));
 
-    %need to make edges vector
+%need to make edges vector
+
+%{
+if gc1
     upLim = zeros(1, length(notches)); %row vectors
     dwnLim = zeros(1, length(notches));
-
     for i = 1:length(notches)
-
         upLim(i) = notches(i) + bandWidth;
         dwnLim(i) = notches(i) - bandWidth;
-
     end
-
     edges = sort([upLim dwnLim]); %horizontal concat and 
     % sorts into ascending order
-
-    i = 1;
-    j = 2;
-
-    while j <= length(edges)
-
-        curEdg = edges(i:j);
-    
-        %need to do this to multiple signals
-    
-        %filter design
-        Wn = curEdg/(fs/2); %passband egde frequencies
-        %^ normalizes to Nyquist frequency
-        [b,a] = butter(ordr, Wn, 'stop'); %build butterworth filter
-        % use stop because want a stopband; ie don't let some freq. thru.
-    
-        %ticData = filtfilt(b, a, ticData); % zero-phase filtering to avoid phase distortion
-
-        %to go over specdata
-        for k = 1:size(specData, 2)
-        
-            specData(:,k) = filtfilt(b, a, specData(:,k)); 
-% apply butterworth column by column
-        end
-
-        i = i + 2;
-        j = j + 2;
+    if cln 
+        msk = edges < 60-bandWidth;
+        edges = [edges(msk) 60];
+        ind = length(edges);
 
     end
+else 
+    edges = notches;
+end
+%}
+if stop
+i = 1;
+j = 2;
 
-    %ticFiltered = ticData;
-    specDataFFT = specData;
+while j <= length(edges)
+    curEdg = edges(i:j);
+    Wn = curEdg/(fs/2); %passband edge frequencies
+    %^ normalizes to Nyquist frequency
+    [b,a] = butter(ordr, Wn, 'stop'); %build butterworth filter
+    % use stop because want a stopband; ie don't let some freq. thru.    
+    %to go over specdata
+    for k = 1:size(specData, 2)
+        specData(:,k) = filtfilt(b, a, specData(:,k)); 
+    % apply butterworth column by column
+    end
+    i = i + 2;
+    j = j + 2;
+end
 
-    %ticFiltered = sum(specData, 2);
+end
+if less
+    Wn = cutoff/(fs/2);
+    [b,a] = butter(ordr,Wn,'low');
+    for k = 1:size(specData, 2)
+        specData(:,k) = filtfilt(b, a, specData(:,k)); 
+    end
+end
+
+
+
+%ticFiltered = ticData;
+specDataFFT = specData;
+
+%ticFiltered = sum(specData, 2);
 
 %     % Plot the original and filtered signals
 %     figure;
@@ -82,7 +90,7 @@ function [specDataFFT] = butterGC(fs, curData, notches, bandWidth, ordr)
 %     ylabel('Intensity');
 %     legend('Original signal', 'Filtered signal');
 
-    %dataOut.ticFFT = ticFiltered;
-    %dataOut.specdataFFT = specDataFFT;
+%dataOut.ticFFT = ticFiltered;
+%dataOut.specdataFFT = specDataFFT;
 
 end

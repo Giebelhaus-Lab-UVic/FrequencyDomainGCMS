@@ -73,14 +73,19 @@ end
 %determine the exponential of best fit
 %of the general structure:
 %intensityPeak = a*exp(b*locationPeak)
+
 expOfBestFit = fit(locationPeak, intensityPeak, 'exp1');
 
 %need to get the exponential function
 %first generate the independent variables, number of acquisitions.
-indepVals = 1:size(pegstruct.tic, 1);
+xvals = 1:size(pegstruct.tic, 1);
+size(fftTIC)
+expOfBestFit.a
+expOfBestFit.b
+
 
 %next calc the function
-depVals1TIC = expOfBestFit.a*exp(expOfBestFit.b*indepVals);
+depVals1TIC = expOfBestFit.a*exp(expOfBestFit.b*xvals); % column vector
 
 %calculate the functions for each mass channel
 depValsSpecData = zeros(sz(2), sz(1));
@@ -97,14 +102,15 @@ depVals2 = flip(depVals1TIC);
 depValsSpecDataBack = flip(depValsSpecData, 2);
 
 
-%add together
+%add together to get total intensity 
 expModValues = depVals1TIC + depVals2;
+size(expModValues)
 % %add together the depValSpecData
 % expModValuesSD = depValsSpecData + depValsSpecDataBack;
 
 %time to multiply the complex numbers by the expModValues to improve the
 %S/N ratio
-fftTIC_expMod = fftTIC .* expModValues'; 
+fftTIC_expMod = fftTIC .* expModValues'; %element wise multiplication
 
 %multiple the TIC exponential against all spectra
 modByTIC = zeros(sz(1), sz(2));
@@ -115,12 +121,30 @@ for i = 1:sz(2)
 
 end
 
-% %multiply the FFT'ed spectra by the exponential modifier
+% multiply the FFT'ed spectra by the exponential modifier
 % fftSD_expMod = specdata_ffted .* expModValuesSD';
 
 % %plot the TIC reconstructed
-% specDataiFFT = abs(ifft(modByTIC));
-% ticReconPlot = sum(specDataiFFT, 2);
-% plot(ticReconPlot);
+figure;
+specDataiFFT = abs(ifft(modByTIC));
+ticReconPlot = sum(specDataiFFT, 2);
+plot(ticReconPlot);
+
+figure;
+    N = length(pegstruct.tic);
+    fs = pegstruct.dataRate;
+    fax_bins = [0 : N-1];
+    fax_hz = fax_bins*fs/N; %frequency axis in Hz
+    N_2 = floor(N/2);
+    mag = abs(fftTIC_expMod);
+    plot(fax_hz(1:N_2), mag(1:N_2)); 
+   
+    
+    xlabel('Frequency (Hz)');
+    ylabel('Magnitude');
+    title('Single-sided Magnitude spectrum');
+    axis tight
+    
+    ylim([0 2.5e19])
 
 end

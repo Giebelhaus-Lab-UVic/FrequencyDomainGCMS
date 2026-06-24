@@ -5,49 +5,64 @@
     %tweak to handle GCMS data as well
     %parallelize to do for loop as parfor
 
-    function [dataOut] = butterGCxGCMain(dataIn, notches, bandWidth, ordr)
+function [dataOut] = butterGCxGCMain(dataIn, opts)
+arguments 
+    dataIn
+    opts.stop = 0
+    opts.less = 0
+    opts.notches = []
+    opts.bw = []
+    opts.ordr = []
+    opts.cutoff = []
+end
 
-    %call this to make the tensor
-    [tensOut] = makeTensor(dataIn);
+%call this to make the tensor
+[tensOut] = makeTensor(dataIn);
+szTens = size(tensOut);
+numMods = szTens(2);
 
-    szTens = size(tensOut);
-    numbMods = szTens(2);
+specDataOut = [];
 
-    specDataOut = [];
+fs = dataIn.dataRate;
+edges = [];
+if opts.stop
+    upLim = zeros(1, length(opts.notches)); %row vectors
+    dwnLim = zeros(1, length(opts.notches));
 
-    fs = dataIn.dataRate;
-
-    %going to call butterGCxGC in a loop for the number of modulations
-    for ii = 1:numbMods
-        
-        %get the current modulation
-        curMod = squeeze(tensOut(:,ii,:)); 
-
-        [specDataFFT] = butterGC(fs, curMod, notches, bandWidth, ordr);
-
-        specDataOut = [specDataOut; specDataFFT]; 
-
+    for i = 1:length(opts.notches)
+        upLim(i) = opts.notches(i) + opts.bw;
+        dwnLim(i) = opts.notches(i) - opts.bw;
     end
-    
-    %make the dataOut structure
-    dataOut = dataIn;
+    edges = sort([upLim dwnLim]); %horizontal concat and 
+    % sorts into ascending order
+end
+for ii = 1:numMods
+    %get the current modulation
+    curMod = squeeze(tensOut(:,ii,:)); 
+    [specDataFFT] = butterGC(fs, curMod,opts.stop,opts.less,edges,opts.bw,opts.ordr,opts.cutoff);
+    specDataOut = [specDataOut; specDataFFT]; 
+end
 
-    %just doing this to get the tensor out
-    dataIn.specdata = specDataOut; 
-    
-    %new tensor
+%make the dataOut structure
+dataOut = dataIn;
+
+%just doing this to get the tensor out
+dataIn.specdata = specDataOut; 
+
+%new tensor for 2d
+if isfield(dataIn,'modTime')
     [tensorFFT] = makeTensor(dataIn);
+end
+ticFFT = sum(specDataOut, 2);
 
-    ticFFT = sum(specDataOut, 2);
-
-    %make the dataout structure complete
-    dataOut.tensorFFT = tensorFFT;
-    dataOut.specdataFFT = specDataOut;
-    %infoFFT is just metadata about the FFT
-        infoFFT.notches = notches;
-        infoFFT.bandWidth = bandWidth;
-        infoFFT.order = ordr;
-    dataOut.infoFFT = infoFFT;
-    dataOut.ticFFT = ticFFT;
+%make the dataout structure complete
+dataOut.tensorBW = tensorFFT;
+dataOut.specdataBW = specDataOut;
+%infoFFT is just metadata about the FFT
+    infoBW.notches = opts.notches;
+    infoBW.bandWidth = opts.bw;
+    infoBW.order = opts.ordr;
+dataOut.infoBW = infoBW;
+dataOut.ticBW = ticFFT;
 
 end
