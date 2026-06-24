@@ -32,7 +32,7 @@ end
 
 
 
-expModFFT(bout)
+expModFFT(bstruc);
 
 
 % --- Step 3: Apply exponential weighting function.
