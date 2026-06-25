@@ -9,7 +9,7 @@ function [dataOut] = butterGCxGCMain(dataIn, opts)
 arguments 
     dataIn
     opts.stop = 0
-    opts.less = 0
+    opts.low = 0
     opts.notches = []
     opts.bw = []
     opts.ordr = []
@@ -20,11 +20,11 @@ end
 [tensOut] = makeTensor(dataIn);
 szTens = size(tensOut);
 numMods = szTens(2);
-
-specDataOut = [];
-
+%specDataOut = [];
+Wns = [];
+Wnl = [];
 fs = dataIn.dataRate;
-edges = [];
+
 if opts.stop
     upLim = zeros(1, length(opts.notches)); %row vectors
     dwnLim = zeros(1, length(opts.notches));
@@ -35,12 +35,20 @@ if opts.stop
     end
     edges = sort([upLim dwnLim]); %horizontal concat and 
     % sorts into ascending order
+    Wns = edges/(fs/2);
 end
+if opts.low
+    Wnl = opts.cutoff/(fs/2);
+end
+dim1 = szTens(1);
+specDataOut = zeros(numMods*dim1, szTens(3));
 for ii = 1:numMods
     %get the current modulation
     curMod = squeeze(tensOut(:,ii,:)); 
-    [specDataFFT] = butterGC(fs, curMod,opts.stop,opts.less,edges,opts.bw,opts.ordr,opts.cutoff);
-    specDataOut = [specDataOut; specDataFFT]; 
+    [specDataFFT] = butterGC(curMod,opts.stop,opts.low,opts.ordr,Wns,Wnl);
+    %specDataOut = [specDataOut; specDataFFT]; 
+    ind = (ii-1)*dim1 + (1:dim1);
+    specDataOut(ind,:) = specDataFFT;
 end
 
 %make the dataOut structure
@@ -51,12 +59,12 @@ dataIn.specdata = specDataOut;
 
 %new tensor for 2d
 if isfield(dataIn,'modTime')
-    [tensorFFT] = makeTensor(dataIn);
+    [tensorBW] = makeTensor(dataIn);
 end
 ticFFT = sum(specDataOut, 2);
 
 %make the dataout structure complete
-dataOut.tensorBW = tensorFFT;
+dataOut.tensorBW = tensorBW;
 dataOut.specdataBW = specDataOut;
 %infoFFT is just metadata about the FFT
     infoBW.notches = opts.notches;
