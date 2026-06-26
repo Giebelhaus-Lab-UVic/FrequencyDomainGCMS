@@ -8,7 +8,7 @@ if license('test','curve_fitting_toolbox') == 0
 end
 
 %compute the FFT of the input data (starting with the TIC)
-fftTIC = fft(pegstruct.tic);
+fftTIC = fft(pegstruct.tic); 
 
 %have to FFT the specData
 %preallocate the specdata_ffted
@@ -79,9 +79,7 @@ expOfBestFit = fit(locationPeak, intensityPeak, 'exp1');
 %need to get the exponential function
 %first generate the independent variables, number of acquisitions.
 xvals = 1:size(pegstruct.tic, 1);
-size(fftTIC)
-expOfBestFit.a
-expOfBestFit.b
+
 
 
 %next calc the function
@@ -104,7 +102,6 @@ depValsSpecDataBack = flip(depValsSpecData, 2);
 
 %add together to get total intensity 
 expModValues = depVals1TIC + depVals2;
-size(expModValues)
 % %add together the depValSpecData
 % expModValuesSD = depValsSpecData + depValsSpecDataBack;
 
@@ -144,7 +141,7 @@ figure;
     ylabel('Magnitude');
     title('Single-sided Magnitude spectrum');
     axis tight
-    
-    ylim([0 2.5e19])
+    xlim([0 fax_hz(N_2)]);
+    ylim([0 1e16])
 
 end

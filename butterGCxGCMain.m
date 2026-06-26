@@ -55,22 +55,22 @@ end
 dataOut = dataIn;
 
 %just doing this to get the tensor out
-dataIn.specdata = specDataOut; 
+%dataIn.specdata = specDataOut; 
 
 %new tensor for 2d
-if isfield(dataIn,'modTime')
-    [tensorBW] = makeTensor(dataIn);
-end
-ticFFT = sum(specDataOut, 2);
+%if isfield(dataIn,'modTime')
+ %   [tensorBW] = makeTensor(dataIn);
+%end
+ticBW = sum(specDataOut, 2);
 
 %make the dataout structure complete
-dataOut.tensorBW = tensorBW;
-dataOut.specdataBW = specDataOut;
+%dataOut.tensor = tensorBW;
+dataOut.specdata = specDataOut;
 %infoFFT is just metadata about the FFT
-    infoBW.notches = opts.notches;
-    infoBW.bandWidth = opts.bw;
-    infoBW.order = opts.ordr;
-dataOut.infoBW = infoBW;
-dataOut.ticBW = ticFFT;
+  %  info.notches = opts.notches;
+   % info.bandWidth = opts.bw;
+    %info.order = opts.ordr;
+%dataOut.info = info;
+dataOut.tic = ticBW;
 
 end

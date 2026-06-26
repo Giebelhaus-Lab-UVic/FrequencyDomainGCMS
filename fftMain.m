@@ -1,4 +1,4 @@
-function [outputArg1,outputArg2] = fftMain(dstruc,opts)
+function [] = fftMain(dstruc,opts)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 arguments (Input)
@@ -17,13 +17,13 @@ end
 
 
 if opts.bwstop
-    if op1.bwpass
+    if opts.bwpass
         bstruc = butterGCxGCMain(dstruc,stop=1,less=1,notches=opts.notches,bw=opts.width,ordr=opts.ordr,cutoff=opts.cutoff);
     else 
         bstruc = butterGCxGCMain(dstruc,stop=1,notches=opts.notches,bw=opts.width,ordr=opts.ordr);
     end
 else 
-    if opt2.bwpass
+    if opts.bwpass
         bstruc = butterGCxGCMain(dstruc,less=1,cutoff=opts.cutoff);
     end
 end
@@ -31,10 +31,24 @@ end
 % --- Step 2: Apply exponential fit if applicable
 
 
-
-expModFFT(bstruc);
-
-
-% --- Step 3: Apply exponential weighting function.
-expModFFT(bout)
+if opts.exp
+    [etic,espec,evals] = expModFFT(bstruc);
+end
+figure;
+    N = length(dstruc.tic);
+    fs = dstruc.dataRate;
+    fax_bins = [0 : N-1];
+    fax_hz = fax_bins*fs/N; %frequency axis in Hz
+    N_2 = floor(N/2);
+    mag = abs(etic);
+    plot(fax_hz(1:N_2), mag(1:N_2)); 
+   
+    
+    xlabel('Frequency (Hz)');
+    ylabel('Magnitude');
+    title('Single-sided Magnitude spectrum');
+    axis tight
+    xlim([0 fax_hz(N_2)]);
+    ylim([0 1e16])
+end
 
