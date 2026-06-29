@@ -33,14 +33,19 @@ end
 
 if opts.exp
     [etic,espec,evals] = expModFFT(dataOut);
-    scaled = rescale(abs(etic), 0, max(bstruc.tic));
+    %scaled = rescale(abs(etic), 0, max(abs(fft(dstruc.tic))));
+    scaled = abs(etic) * max(abs(fft(dstruc.tic)))/max(abs(etic));
+    max(abs(scaled))
+    min(scaled)
+    max(scaled)
+    max(abs(dstruc.tic))
     dataOut.tic = scaled;
     dataOut.specdata = espec; % will need to rescale this
     dataOut.ExpVals = evals;
 end
 
 
-
+%{
 figure;
     N = length(dataOut.tic);
     fs = dstruc.dataRate;
@@ -57,5 +62,6 @@ figure;
     axis tight
     xlim([0 fax_hz(N_2)]);
     ylim([0 5.5e8]);
+%}
 end
 
