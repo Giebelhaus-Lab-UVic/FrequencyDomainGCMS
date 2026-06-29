@@ -1,4 +1,4 @@
-function [] = fftMain(dstruc,opts)
+function [dataOut] = fftMain(dstruc,opts)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 arguments (Input)
@@ -18,13 +18,13 @@ end
 
 if opts.bwstop
     if opts.bwpass
-        bstruc = butterGCxGCMain(dstruc,stop=1,less=1,notches=opts.notches,bw=opts.width,ordr=opts.ordr,cutoff=opts.cutoff);
+        dataOut = butterGCxGCMain(dstruc,stop=1,less=1,notches=opts.notches,bw=opts.width,ordr=opts.ordr,cutoff=opts.cutoff);
     else 
-        bstruc = butterGCxGCMain(dstruc,stop=1,notches=opts.notches,bw=opts.width,ordr=opts.ordr);
+        dataOut = butterGCxGCMain(dstruc,stop=1,notches=opts.notches,bw=opts.width,ordr=opts.ordr);
     end
 else 
     if opts.bwpass
-        bstruc = butterGCxGCMain(dstruc,less=1,cutoff=opts.cutoff);
+        dataOut = butterGCxGCMain(dstruc,less=1,cutoff=opts.cutoff);
     end
 end
 
@@ -32,15 +32,22 @@ end
 
 
 if opts.exp
-    [etic,espec,evals] = expModFFT(bstruc);
+    [etic,espec,evals] = expModFFT(dataOut);
+    scaled = rescale(abs(etic), 0, max(bstruc.tic));
+    dataOut.tic = scaled;
+    dataOut.specdata = espec; % will need to rescale this
+    dataOut.ExpVals = evals;
 end
+
+
+
 figure;
-    N = length(dstruc.tic);
+    N = length(dataOut.tic);
     fs = dstruc.dataRate;
-    fax_bins = [0 : N-1];
+    fax_bins = 0 : N-1;
     fax_hz = fax_bins*fs/N; %frequency axis in Hz
     N_2 = floor(N/2);
-    mag = abs(etic);
+    mag = abs(scaled);
     plot(fax_hz(1:N_2), mag(1:N_2)); 
    
     
@@ -49,6 +56,6 @@ figure;
     title('Single-sided Magnitude spectrum');
     axis tight
     xlim([0 fax_hz(N_2)]);
-    ylim([0 1e16])
+    ylim([0 5.5e8]);
 end
 
