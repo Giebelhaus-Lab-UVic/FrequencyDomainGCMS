@@ -122,6 +122,7 @@ end
 % fftSD_expMod = specdata_ffted .* expModValuesSD';
 
 % %plot the TIC reconstructed
+%{
 figure;
 specDataiFFT = abs(ifft(modByTIC));
 ticReconPlot = sum(specDataiFFT, 2);
@@ -143,5 +144,5 @@ figure;
     axis tight
     xlim([0 fax_hz(N_2)]);
     ylim([0 1e16])
-
+%}
 end
