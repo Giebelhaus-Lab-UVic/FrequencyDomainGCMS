@@ -4,7 +4,7 @@ function [dataOut] = fftMain(dstruc,opts)
 arguments (Input)
     dstruc struct
     opts.bwstop = 0
-    opts.bwpass = 0
+    opts.bwlow = 0
     opts.exp = 0
     opts.width = []
     opts.notches = []
@@ -17,14 +17,14 @@ end
 
 
 if opts.bwstop
-    if opts.bwpass
-        dataOut = butterGCxGCMain(dstruc,stop=1,less=1,notches=opts.notches,bw=opts.width,ordr=opts.ordr,cutoff=opts.cutoff);
+    if opts.bwlow
+        dataOut = butterGCxGCMain(dstruc,stop=1,low=1,notches=opts.notches,bw=opts.width,ordr=opts.ordr,cutoff=opts.cutoff);
     else 
         dataOut = butterGCxGCMain(dstruc,stop=1,notches=opts.notches,bw=opts.width,ordr=opts.ordr);
     end
 else 
-    if opts.bwpass
-        dataOut = butterGCxGCMain(dstruc,less=1,cutoff=opts.cutoff);
+    if opts.bwlow
+        dataOut = butterGCxGCMain(dstruc,low=1,cutoff=opts.cutoff);
     end
 end
 
@@ -32,14 +32,15 @@ end
 
 
 if opts.exp
-    [etic,espec,evals] = expModFFT(dataOut);
+    [etic,espec,evals,fftspec] = expModFFT(dataOut);
     %scaled = rescale(abs(etic), 0, max(abs(fft(dstruc.tic))));
     scaled = abs(etic) * max(abs(fft(dstruc.tic)))/max(abs(etic));
-    dataOut.tic = scaled;
-    dataOut.specdata = espec; % will need to rescale this
+    dataOut.tic = scaled; % are adding an abs to this; need to check if this is ok as output or if we should keep with imaginary #s
+    dataOut.specdata = espec;% will need to rescale this
+    spec_scaled = abs(espec) * max(abs(fftspec(:)))/max(abs(espec(:)));
+    dataOut.specdata = spec_scaled;
     dataOut.ExpVals = evals;
 end
-
 
 
 figure;

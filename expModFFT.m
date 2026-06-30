@@ -1,4 +1,4 @@
-function [fftTIC_expMod, modByTIC, expModValues] = expModFFT(pegstruct)
+function [fftTIC_expMod, modByTIC, expModValues,specdata_ffted] = expModFFT(pegstruct)
 
 %check if curve fitting toolbox is installed as this is required.
 if license('test','curve_fitting_toolbox') == 0
