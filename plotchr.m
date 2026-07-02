@@ -1,9 +1,11 @@
-function[chr] = plotchr(struc)
+function[chr] = plotchr(struc,title1)
 arguments
     struc
+    title1 = []
 end
 
 tens = makeTensor(struc);
+%tens = flip(tens);
 chr = sum(tens,3);
 figure; 
 imagesc(chr);
@@ -11,6 +13,8 @@ colormap(jet);
 axis xy;
 axis equal;
 hold on;
+if title1
+    title(title1)
 end
 
 

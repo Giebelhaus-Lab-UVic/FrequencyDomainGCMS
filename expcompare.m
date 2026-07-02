@@ -1,4 +1,4 @@
-stopexplow = butterGCxGCMain(stopexp,low=1,ordr=4,cutoff=60);
+%stopexplow = butterGCxGCMain(stopexp,low=1,ordr=4,cutoff=60);
 %{
 atens = makeTensor(stoplowexp);
 btens = makeTensor(stopexplow);

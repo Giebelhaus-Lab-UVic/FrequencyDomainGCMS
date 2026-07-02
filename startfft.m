@@ -3,9 +3,9 @@ function [fstruc] = startfft(dstruc, plt,after)
 % fft.
 
 if after
-    tic = dstruc.ticBW;
-    ftic = fft(dstruc.ticBW);
-    spec = dstruc.specdataBW;
+    tic = dstruc.tic;
+    ftic = fft(dstruc.tic);
+    spec = dstruc.specdata;
     sz = size(spec);
     fspec = zeros(sz(1), sz(2));
 
