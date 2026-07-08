@@ -1,23 +1,24 @@
-function [fftTIC_expMod, modByTIC, expModValues,specdata_ffted] = expModFFT(pegstruct)
+function [fftTIC_expMod, modByTIC, expModValues] = expModFFT(dataIn)
 
 %check if curve fitting toolbox is installed as this is required.
-if license('test','curve_fitting_toolbox') == 0
+%if license('test','curve_fitting_toolbox') == 0
 
-    errCurveFitting = msgbox("CurveFittingToolBox is required for this package. Please save work and install.","Error","error");
+ %   errCurveFitting = msgbox("CurveFittingToolBox is required for this package. Please save work and install.","Error","error");
 
-end
+%end 
+% ^ this doesn't actually work
 
 %compute the FFT of the input data (starting with the TIC)
-fftTIC = fft(pegstruct.tic); 
+fftTIC = fft(dataIn.tic); 
 
 %have to FFT the specData
 %preallocate the specdata_ffted
-sz = size(pegstruct.specdata);
+sz = size(dataIn.specdata);
 specdata_ffted = zeros(sz(1), sz(2));
 
 for page = 1:sz(2)
 
-    specdata_ffted(:,page) = fft(pegstruct.specdata(:,page));
+    specdata_ffted(:,page) = fft(dataIn.specdata(:,page));
 
 end
 
@@ -78,7 +79,7 @@ expOfBestFit = fit(locationPeak, intensityPeak, 'exp1');
 
 %need to get the exponential function
 %first generate the independent variables, number of acquisitions.
-xvals = 1:size(pegstruct.tic, 1);
+xvals = 1:size(dataIn.tic, 1);
 
 
 

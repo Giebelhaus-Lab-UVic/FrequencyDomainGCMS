@@ -24,7 +24,7 @@ if opts.bwstop
     end
 else 
     if opts.bwlow
-        dataOut = butterGCxGCMain(dstruc,low=1,cutoff=opts.cutoff);
+        dataOut = butterGCxGCMain(dstruc,low=1,ordr=opts.ordr,cutoff=opts.cutoff);
     end
 end
 
@@ -32,24 +32,35 @@ end
 
 
 if opts.exp
-    [etic,espec,evals,fftspec] = expModFFT(dataOut);
+    [etic,espec,evals] = expModFFT(dataOut);
     %scaled = rescale(abs(etic), 0, max(abs(fft(dstruc.tic))));
+    %{
     scaled = abs(etic) * max(abs(fft(dstruc.tic)))/max(abs(etic));
     dataOut.tic = scaled; % are adding an abs to this; need to check if this is ok as output or if we should keep with imaginary #s
     dataOut.specdata = espec;% will need to rescale this
     spec_scaled = abs(espec) * max(abs(fftspec(:)))/max(abs(espec(:)));
     dataOut.specdata = spec_scaled;
     dataOut.ExpVals = evals;
+    %}
+    ietic = abs(ifft(etic));
+    iespec = abs(ifft(espec));
+    scaletic = ietic * max(dstruc.tic)/max(ietic);
+    dataOut.tic = scaletic;
+    scalespec = iespec * max(dstruc.specdata(:))/max(iespec(:));
+    dataOut.specdata = scalespec;
+
+
+
 end
 
-
+%{
 figure;
     N = length(dataOut.tic);
     fs = dstruc.dataRate;
     fax_bins = 0 : N-1;
     fax_hz = fax_bins*fs/N; %frequency axis in Hz
     N_2 = floor(N/2);
-    mag = abs(scaled);
+    mag = abs(dataOut.tic);
     plot(fax_hz(1:N_2), mag(1:N_2)); 
    
     
@@ -59,6 +70,13 @@ figure;
     axis tight
     xlim([0 fax_hz(N_2)]);
     ylim([0 5.5e8]);
-
+%}
 end
+
+
+
+% add in before and after plotting of tic
+% put fft plotting as other function and we can just call it
+% should only need specdata, mod time, etc coming in and we will sum to get
+%  tic. minimal params needed as the input
 
