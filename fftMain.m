@@ -34,7 +34,7 @@ end
 
 
 if opts.exp
-    [etic,espec,evals] = expModFFT(dataOut);
+    [etic,espec] = expModFFT(dataOut);
     %scaled = rescale(abs(etic), 0, max(abs(fft(dstruc.tic))));
     %{
     scaled = abs(etic) * max(abs(fft(dstruc.tic)))/max(abs(etic));

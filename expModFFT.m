@@ -1,4 +1,4 @@
-function [fftTIC_expMod, modByTIC, expModValues] = expModFFT(dataIn)
+function [fftTIC_expMod, modByTIC] = expModFFT(dataIn)
 
 %check if curve fitting toolbox is installed as this is required.
 %if license('test','curve_fitting_toolbox') == 0
@@ -98,7 +98,7 @@ depValsSpecData = zeros(sz(2), sz(1));
 %double sided power spectrum, so need to flip the depVals1
 depVals2 = flip(depVals1TIC);
 %doing the same with depValsSpecData
-depValsSpecDataBack = flip(depValsSpecData, 2);
+%depValsSpecDataBack = flip(depValsSpecData, 2);
 
 
 %add together to get total intensity 
