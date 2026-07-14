@@ -1,20 +1,32 @@
-function[chr] = plotchr(struc,title1)
+function[chr] = plotchr(struc,dim,title1)
 arguments
     struc
+    dim
     title1 = []
 end
 
-tens = makeTensor(struc);
-%tens = flip(tens);
-chr = sum(tens,3);
-figure; 
-imagesc(chr);
-colormap(jet);
-axis xy;
-axis equal;
-hold on;
+if dim ==2
+    tens = makeTensor(struc);
+    chr = sum(tens,3);
+    figure; 
+    imagesc(chr);
+    clim([0 5e5]); % take this out after figs for paper
+    colormap(jet);
+   
+    colorbar;
+    axis xy;
+    xlabel('First Dimension Acquisitions');
+    ylabel('Second Dimension Acquisitions');
+    ax = gca;
+    ax.FontSize = 14;
+   
+end
+if dim==1
+    figure;
+    plot(struc.tic);
+end
 if title1
-    title(title1)
+    title(title1);
 end
 
 

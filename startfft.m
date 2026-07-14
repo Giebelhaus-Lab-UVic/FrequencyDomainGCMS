@@ -1,4 +1,4 @@
-function [fstruc] = startfft(dstruc, plt,fft_)
+function startfft(dstruc, plt,fft_)
 % Convert TIC of 2D chromatographic data into frequency domain using
 % fft.
 
@@ -8,13 +8,13 @@ if fft_
     sz = size(spec);
     fspec = zeros(sz(1), sz(2));
 
-    for i = 1:sz(2)
-
-           fspec(:,i) = fft(spec(:,i));
-    end
+   % for i = 1:sz(2)
+%
+  %         fspec(:,i) = fft(spec(:,i));
+ %   end
 else
     ftic = dstruc.tic;
-    fspec = dstruc.specdata;
+%    fspec = dstruc.specdata;
 end
 if plt
     figure;
@@ -29,15 +29,18 @@ if plt
     xlim([0 100])
     xlabel('Frequency (Hz)');
     ylabel('Magnitude');
-    title('Single-sided Magnitude spectrum');
+   % title('Single-sided Magnitude spectrum');
     axis tight
     ylim([0 5.5e8]);
+    %ylim([0 9.0e7]);
+    ax = gca;
+    ax.FontSize = 14;
     
 end
 
-fstruc = dstruc;
-fstruc.tic = ftic;
-fstruc.specdata = fspec;
+%fstruc = dstruc;
+%fstruc.tic = ftic;
+%fstruc.specdata = fspec;
 end
 
 

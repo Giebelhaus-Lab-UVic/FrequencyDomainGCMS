@@ -1,8 +1,10 @@
-function [dataOut] = fftMain(dstruc,opts)
+function [dataOut] = fftMain(dstruc,plt,opts)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
+% Data must be passed in the form of a data structure
 arguments (Input)
     dstruc struct
+    plt 
     opts.bwstop = 0
     opts.bwlow = 0
     opts.exp = 0
@@ -15,7 +17,7 @@ end
 
 % --- Step 2: Apply butterworth band filter if applicable
 
-
+dataOut = dstruc;
 if opts.bwstop
     if opts.bwlow
         dataOut = butterGCxGCMain(dstruc,stop=1,low=1,notches=opts.notches,bw=opts.width,ordr=opts.ordr,cutoff=opts.cutoff);
@@ -71,9 +73,20 @@ figure;
     xlim([0 fax_hz(N_2)]);
     ylim([0 5.5e8]);
 %}
+
+if plt
+    if dstruc.modTime == 0
+        plotchr(dstruc,1,'Before Denoising');
+        plotchr(dataOut,1, 'After Denoising');
+    else     
+        plotchr(dstruc,2,'Before Denoising');
+        plotchr(dataOut,2, 'After Denoising');
+    end
 end
 
+end
 
+%startfft(dataOut,1,1);
 
 % add in before and after plotting of tic
 % put fft plotting as other function and we can just call it
