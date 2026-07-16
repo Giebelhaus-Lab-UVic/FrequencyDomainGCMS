@@ -20,13 +20,13 @@ end
 dataOut = dstruc;
 if opts.bwstop
     if opts.bwlow
-        dataOut = butterGCxGCMain(dstruc,stop=1,low=1,notches=opts.notches,bw=opts.width,ordr=opts.ordr,cutoff=opts.cutoff);
+        dataOut = butterMain(dstruc,stop=1,low=1,notches=opts.notches,bw=opts.width,ordr=opts.ordr,cutoff=opts.cutoff);
     else 
-        dataOut = butterGCxGCMain(dstruc,stop=1,notches=opts.notches,bw=opts.width,ordr=opts.ordr);
+        dataOut = butterMain(dstruc,stop=1,notches=opts.notches,bw=opts.width,ordr=opts.ordr);
     end
 else 
     if opts.bwlow
-        dataOut = butterGCxGCMain(dstruc,low=1,ordr=opts.ordr,cutoff=opts.cutoff);
+        dataOut = butterMain(dstruc,low=1,ordr=opts.ordr,cutoff=opts.cutoff);
     end
 end
 
@@ -47,6 +47,7 @@ if opts.exp
     ietic = abs(ifft(etic));
     iespec = abs(ifft(espec));
     scaletic = ietic * max(dstruc.tic)/max(ietic);
+   % scaletic = ietic;
     dataOut.tic = scaletic;
     scalespec = iespec * max(dstruc.specdata(:))/max(iespec(:));
     dataOut.specdata = scalespec;
