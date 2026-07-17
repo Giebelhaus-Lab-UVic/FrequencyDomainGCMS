@@ -1,32 +1,33 @@
-function [dataOut] = fftMain(dstruc,plt,opts)
+function [dataOut] = fftMain(dataIn,plt,opts)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 % Data must be passed in the form of a data structure
 arguments (Input)
-    dstruc struct
+    dataIn struct
     plt 
     opts.bwstop = 0
     opts.bwlow = 0
     opts.exp = 0
     opts.width = []
     opts.notches = []
-    opts.ordr = []
+    opts.stop_ordr = []
+    opts.low_ordr = []
     opts.cutoff = []
 end
 
-
+dataIn.tic = sum(dataIn.specdata,2);
 % --- Step 2: Apply butterworth band filter if applicable
 
-dataOut = dstruc;
+dataOut = dataIn;
 if opts.bwstop
     if opts.bwlow
-        dataOut = butterMain(dstruc,stop=1,low=1,notches=opts.notches,bw=opts.width,ordr=opts.ordr,cutoff=opts.cutoff);
+        dataOut = butterMain(dataIn,stop=1,low=1,notches=opts.notches,bw=opts.width,s_ordr=opts.stop_ordr,l_ordr=opts.low_ordr,cutoff=opts.cutoff);
     else 
-        dataOut = butterMain(dstruc,stop=1,notches=opts.notches,bw=opts.width,ordr=opts.ordr);
+        dataOut = butterMain(dataIn,stop=1,notches=opts.notches,bw=opts.width,s_ordr=opts.stop_ordr);
     end
 else 
     if opts.bwlow
-        dataOut = butterMain(dstruc,low=1,ordr=opts.ordr,cutoff=opts.cutoff);
+        dataOut = butterMain(dataIn,low=1,l_ordr=opts.low_ordr,cutoff=opts.cutoff);
     end
 end
 
@@ -44,16 +45,18 @@ if opts.exp
     dataOut.specdata = spec_scaled;
     dataOut.ExpVals = evals;
     %}
+    
     ietic = abs(ifft(etic));
     iespec = abs(ifft(espec));
-    scaletic = ietic * max(dstruc.tic)/max(ietic);
+    scaletic = ietic * max(dataIn.tic)/max(ietic);
    % scaletic = ietic;
     dataOut.tic = scaletic;
-    scalespec = iespec * max(dstruc.specdata(:))/max(iespec(:));
+  
+    scalespec = iespec * max(dataIn.specdata(:))/max(iespec(:));
     dataOut.specdata = scalespec;
-
-
-
+    
+   
+    
 end
 
 %{
@@ -76,11 +79,11 @@ figure;
 %}
 
 if plt
-    if dstruc.modTime == 0
-        plotchr(dstruc,1,'Before Denoising');
+    if dataIn.modTime == 0
+        plotchr(dataIn,1,'Before Denoising');
         plotchr(dataOut,1, 'After Denoising');
     else     
-        plotchr(dstruc,2,'Before Denoising');
+        plotchr(dataIn,2,'Before Denoising');
         plotchr(dataOut,2, 'After Denoising');
     end
 end

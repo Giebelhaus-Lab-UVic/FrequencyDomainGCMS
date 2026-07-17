@@ -12,7 +12,8 @@ arguments
     opts.low = 0
     opts.notches = []
     opts.bw = []
-    opts.ordr = []
+    opts.s_ordr = []
+    opts.l_ordr = []
     opts.cutoff = []
 end
 
@@ -45,7 +46,7 @@ specDataOut = zeros(numMods*dim1, szTens(3));
 for ii = 1:numMods
     %get the current modulation
     curMod = squeeze(tensOut(:,ii,:)); 
-    [specDataFFT] = butterFilt(curMod,opts.stop,opts.low,opts.ordr,Wns,Wnl);
+    [specDataFFT] = butterFilt(curMod,opts.stop,opts.low,opts.s_ordr,opts.l_ordr,Wns,Wnl);
     %specDataOut = [specDataOut; specDataFFT]; 
     ind = (ii-1)*dim1 + (1:dim1);
     specDataOut(ind,:) = specDataFFT;

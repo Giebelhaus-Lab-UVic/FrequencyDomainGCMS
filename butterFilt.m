@@ -12,7 +12,8 @@
 
 %edges = vector of start and stop of each notch region in Hz.
 
-function [specDataFFT] = butterFilt(curMod,stop,low,ordr,Wns,Wnl)
+function [specDataFFT] = butterFilt(curMod,stop,low,s_ordr,l_ordr,Wns,Wnl)
+
     
 %only works for TIC right now, will just expand this sub function to
 %apply to specdata in the near future
@@ -52,7 +53,7 @@ if stop
     i = 1;
     j = 2;
     while j <= length(Wns)
-        [b,a] = butter(ordr, Wns(i:j), 'stop'); %build butterworth filter
+        [b,a] = butter(s_ordr, Wns(i:j), 'stop'); %build butterworth filter
         % use stop because want a stopband; ie don't let some freq. thru.    
         %to go over specdata
         for k = 1:size(curMod, 2)
@@ -64,7 +65,7 @@ if stop
     end
 end
 if low
-    [b,a] = butter(ordr,Wnl,'low');
+    [b,a] = butter(l_ordr,Wnl,'low');
     for k = 1:size(curMod, 2)
         curMod(:,k) = filtfilt(b, a, curMod(:,k)); 
     end
