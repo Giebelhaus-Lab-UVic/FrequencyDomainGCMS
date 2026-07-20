@@ -63,3 +63,9 @@ snr_c = 2*(max(alkc_1) - 168269)/c_h
 snr_n = 2*(max(alkn_1) - 88584)/n_h
 
 p_incr = (snr_c - snr_n)/snr_n *100;
+
+
+
+% instead use std() of an area (prob to left of little peak). then do that
+% calculation instead. and then in manuscript say what region was used
+% based on acquisitions. 

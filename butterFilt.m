@@ -66,6 +66,7 @@ if stop
 end
 if low
     [b,a] = butter(l_ordr,Wnl,'low');
+    %[b,a] = cheby2(l_ordr,60,Wnl,'low');
     for k = 1:size(curMod, 2)
         curMod(:,k) = filtfilt(b, a, curMod(:,k)); 
     end
