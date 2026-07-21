@@ -3,7 +3,7 @@ function startfft(dstruc, plt,fft_)
 % fft.
 
 if fft_
-    ftic = fft(dstruc.tic);
+    ftic = fft(dstruc.tic_2);
     spec = dstruc.specdata;
     sz = size(spec);
     fspec = zeros(sz(1), sz(2));

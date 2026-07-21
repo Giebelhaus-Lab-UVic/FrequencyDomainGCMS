@@ -1,5 +1,5 @@
 
-gctens = makeTensor(g2d_ord2);
+gctens = makeTensor(g_scale_IN);
 gcchr = sum(gctens,3);
 gcticD1 = sum(gcchr,1);
 

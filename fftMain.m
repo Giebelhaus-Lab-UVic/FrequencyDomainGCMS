@@ -48,7 +48,9 @@ if opts.exp
     
     ietic = abs(ifft(etic));
     iespec = abs(ifft(espec));
-    scaletic = ietic * max(dataIn.tic)/max(ietic);
+    max_out = max(dataIn.tic);
+    loc_max = dataIn.tic==max_out;
+    scaletic = ietic * max_out/ietic(loc_max);
    % scaletic = ietic;
     dataOut.tic = scaletic;
   
