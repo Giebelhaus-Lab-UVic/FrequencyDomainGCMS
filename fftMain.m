@@ -33,7 +33,6 @@ end
 
 % --- Step 2: Apply exponential fit if applicable
 
-
 if opts.exp
     [etic,espec] = expModFFT(dataOut);
     %scaled = rescale(abs(etic), 0, max(abs(fft(dstruc.tic))));
@@ -46,19 +45,42 @@ if opts.exp
     dataOut.ExpVals = evals;
     %}
     
+   
     ietic = abs(ifft(etic));
     iespec = abs(ifft(espec));
-    max_out = max(dataIn.tic);
-    loc_max = dataIn.tic==max_out;
-    scaletic = ietic * max_out/ietic(loc_max);
+%
+
+
+    max_in = max(dataIn.tic);
+    loc_max = dataIn.tic==max_in;
+    scaletic = ietic * max_in/ietic(loc_max);
+  %   scaletic = ietic;
+    
+
+    max_in_spec = max(dataIn.specdata(:));
+    loc_smax = dataIn.specdata(:)==max_in_spec;
+    flat_spec = iespec(:);
+    scalespec = iespec * max_in_spec/flat_spec(loc_smax);
+
+    
    % scaletic = ietic;
-    dataOut.tic = scaletic;
-  
-    scalespec = iespec * max(dataIn.specdata(:))/max(iespec(:));
-    dataOut.specdata = scalespec;
-    
+
    
+  %  scalespec = iespec;
     
+    dataOut.specdata = scalespec;
+   
+    dataOut.tic = scaletic;
+ 
+
+    
+
+%{
+    scale = (dataIn.specdata(:)' * iespec(:)) / (iespec(:)' * iespec(:));
+    scalespec = iespec * scale;
+    dataOut.specdata = scalespec;
+    dataOut.tic = sum(scalespec,2);
+%}
 end
 
 %{
