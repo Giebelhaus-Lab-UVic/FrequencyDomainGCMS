@@ -1,5 +1,5 @@
 
-gctens = makeTensor(g_out60);
+gctens = makeTensor(g_out602);
 gcchr = sum(gctens,3);
 
 gcticD1_us = sum(gcchr,1);
@@ -13,7 +13,7 @@ gnticD1 = sum(gnchr,1);
 
 gcticD1 = gcticD1_us * max(gnticD1)/max(gcticD1_us);
 
-figure; 
+fig = figure; 
 yyaxis left
 plot(gnticD1); 
 ylabel('Intensity')
@@ -29,6 +29,10 @@ lgd.FontSize = 14;
 
 ax = gca;
 ax.FontSize = 14;
+fig.Units = 'inches';
+fig.Position = [1 1 8 4];
+
+exportgraphics(fig, 'Figure6.png', 'Resolution', 600);
 
 
  
