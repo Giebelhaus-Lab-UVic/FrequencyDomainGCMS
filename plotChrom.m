@@ -1,4 +1,4 @@
-function[chr] = plotchr(struc,dim,title1)
+function[chr] = plotChrom(struc,dim,title1)
 arguments
     struc
     dim
@@ -8,18 +8,25 @@ end
 if dim ==2
     tens = makeTensor(struc);
     chr = sum(tens,3);
-    figure; 
+    fig = figure; 
     imagesc(chr);
-    clim([0 5e5]); % take this out after figs for paper
+    clim([0 3e5]); % take this out after figs for paper
     colormap(jet);
    
     colorbar;
     axis xy;
     xlabel('First Dimension Acquisitions');
     ylabel('Second Dimension Acquisitions');
+    
+   
     ax = gca;
     ax.FontSize = 14;
+    fig.Units = 'inches';
+    fig.Position = [1 1 8 4];
+
+    exportgraphics(fig, 'noisedgrob2d.png', 'Resolution', 600);
    
+
 end
 if dim==1
     figure;

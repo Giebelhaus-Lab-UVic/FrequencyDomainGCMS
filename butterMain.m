@@ -1,11 +1,6 @@
-%butterworth main
-
-%to do
-    %output the data into a plot
-    %tweak to handle GCMS data as well
-    %parallelize to do for loop as parfor
-
 function [dataOut] = butterMain(dataIn, opts)
+% Applies lowpass and/or band-stop Butterworth filters to one- or two-
+% dimensional gas chromatography data in the frequency domain.
 arguments 
     dataIn
     opts.stop = 0
@@ -17,29 +12,33 @@ arguments
     opts.cutoff = []
 end
 
-%call this to make the tensor
+% --- Step 1: Fold data into a tensor.
+
 [tensOut] = makeTensor(dataIn);
 szTens = size(tensOut);
 numMods = szTens(2);
-%specDataOut = [];
-Wns = [];
-Wnl = [];
-fs = dataIn.dataRate;
+
+% --- Step 2: Normalize frequencies to Nyquist frequency.
+Wns = [];                                   
+fs = dataIn.dataRate;                   % Obtain sampling rate
 
 if opts.stop
-    upLim = zeros(1, length(opts.notches)); %row vectors
+    upLim = zeros(1, length(opts.notches)); 
     dwnLim = zeros(1, length(opts.notches));
 
-    for i = 1:length(opts.notches)
-        upLim(i) = opts.notches(i) + opts.bw;
+    % Prepare notches according to specified width
+    for i = 1:length(opts.notches)      
+        upLim(i) = opts.notches(i) + opts.bw; 
         dwnLim(i) = opts.notches(i) - opts.bw;
     end
-    edges = sort([upLim dwnLim]); %horizontal concat and 
-    % sorts into ascending order
-    Wns = edges/(fs/2);
+
+    edges = sort([upLim dwnLim]); 
+    Wns = edges/(fs/2);                 % Normalize
 end
+
+Wnl = [];
 if opts.low
-    Wnl = opts.cutoff/(fs/2);
+    Wnl = opts.cutoff/(fs/2);           % Normalize
 end
 dim1 = szTens(1);
 specDataOut = zeros(numMods*dim1, szTens(3));
