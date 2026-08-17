@@ -3,6 +3,12 @@ function [dataOut] = fftMain(dataIn,plt,opts)
 % using a user-specified selection of Butterworth lowpass filtering, 
 % Butterworth band-stop fitering, and/or the fitting of an exponential
 % function to the data. 
+% dataIn is a structure with the following fields:
+% tic = vector of total ion count data.
+% specdata = matrix of spectral data, where each row is an acquisition and 
+% each column is a mass channel.
+% numScans = total number of acquisitions
+% dataRate = acquisition rate (in Hz or spectra/s)
 arguments (Input)
     dataIn struct
     plt 
@@ -16,7 +22,9 @@ arguments (Input)
     opts.cutoff = []
 end
 dataOut = dataIn;                       % Initialize output structure
+
 % --- Step 1: Apply Butterworth filters if applicable.
+
 if opts.bwstop
     if opts.bwlow
         dataOut = butterMain(dataIn,stop=1,low=1,notches=opts.notches,bw=opts.width,s_ordr=opts.stop_ordr,l_ordr=opts.low_ordr,cutoff=opts.cutoff);

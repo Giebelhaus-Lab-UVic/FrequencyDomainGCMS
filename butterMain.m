@@ -19,6 +19,7 @@ szTens = size(tensOut);
 numMods = szTens(2);
 
 % --- Step 2: Normalize frequencies to Nyquist frequency.
+
 Wns = [];                                   
 fs = dataIn.dataRate;                   % Obtain sampling rate
 
@@ -33,44 +34,31 @@ if opts.stop
     end
 
     edges = sort([upLim dwnLim]); 
-    Wns = edges/(fs/2);                 % Normalize
+    Wns = edges/(fs/2);                 % Normalize notch frequencies
 end
 
 Wnl = [];
 if opts.low
-    Wnl = opts.cutoff/(fs/2);           % Normalize
+    Wnl = opts.cutoff/(fs/2);           % Normalize cutoff frequency
 end
+
+% --- Step 3: Apply filters modulation-by-modulation
+
 dim1 = szTens(1);
 specDataOut = zeros(numMods*dim1, szTens(3));
-for ii = 1:numMods
-    %get the current modulation
+
+for ii = 1:numMods                    
     curMod = squeeze(tensOut(:,ii,:)); 
     [specDataFFT] = butterFilt(curMod,opts.stop,opts.low,opts.s_ordr,opts.l_ordr,Wns,Wnl);
-    %specDataOut = [specDataOut; specDataFFT]; 
     ind = (ii-1)*dim1 + (1:dim1);
     specDataOut(ind,:) = specDataFFT;
 end
 
-%make the dataOut structure
+% --- Step 4: Update fields in data structure
+
 dataOut = dataIn;
-
-%just doing this to get the tensor out
-%dataIn.specdata = specDataOut; 
-
-%new tensor for 2d
-%if isfield(dataIn,'modTime')
- %   [tensorBW] = makeTensor(dataIn);
-%end
 ticBW = sum(specDataOut, 2);
-
-%make the dataout structure complete
-%dataOut.tensor = tensorBW;
 dataOut.specdata = specDataOut;
-%infoFFT is just metadata about the FFT
-  %  info.notches = opts.notches;
-   % info.bandWidth = opts.bw;
-    %info.order = opts.ordr;
-%dataOut.info = info;
 dataOut.tic = ticBW;
 
 end

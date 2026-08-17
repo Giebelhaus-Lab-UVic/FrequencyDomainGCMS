@@ -8,23 +8,15 @@ end
 if dim ==2
     tens = makeTensor(struc);
     chr = sum(tens,3);
-    fig = figure; 
+    figure; 
     imagesc(chr);
-    clim([0 3e5]); % take this out after figs for paper
     colormap(jet);
    
     colorbar;
     axis xy;
     xlabel('First Dimension Acquisitions');
     ylabel('Second Dimension Acquisitions');
-    
-   
-    ax = gca;
-    ax.FontSize = 14;
-    fig.Units = 'inches';
-    fig.Position = [1 1 8 4];
-
-    exportgraphics(fig, 'noisedgrob2d.png', 'Resolution', 600);
+ 
    
 
 end
