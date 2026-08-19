@@ -1,51 +1,38 @@
 function[chr] = plotChrom(struc,dim,title1)
+% Visualizes a one- or two-dimensional gas chromatogram before or after
+% denoising in the frequency domain.
 arguments
     struc
     dim
     title1 = []
 end
 
-if dim ==2
-    tens = makeTensor(struc);
+% --- Step 1: Plot 1D or 2D chromatogram.
+
+if dim ==2                              % 2D data
+    tens = makeTensor(struc);           % Fold data into tensor
     chr = sum(tens,3);
     figure; 
     imagesc(chr);
     colormap(jet);
-   
     colorbar;
     axis xy;
     xlabel('First Dimension Acquisitions');
-    ylabel('Second Dimension Acquisitions');
- 
-   
-
+    ylabel('Second Dimension Acquisitions');  
 end
-if dim==1
+
+if dim==1                               % 1D data
     figure;
     plot(struc.tic);
 end
+
+% --- Step 2: Label as before or after denosing.
+
 if title1
-    title(title1);
+    title(title1);                 
+end
+
 end
 
 
 
-% acq = dataRate*modTime
-% x = numScans/acq
-% y = reshape(specdata,  acq, x, massRange)
-% z = sum(y,3) -> this is 1d and 2d data
-% mz = y(num,num,:) will give specific region u want to look in
-
-% whatever = LoadPEG("filename.peg", 1)
-
-% can extraxt two peaks that are "overlapping" from each other using:
-
-% y(a:b, c:d, e) and y(a:b, c:d, e)
-
-% where a:b is range in one dimension, c:d is range in other, and e is
-% position of mass spec peak. this "cuts" data out.
-
-% Acut = A1cube(241,202,:);
-% ms(Acut);
-% figure; bar(Acut);
-% figure; bar(squeeze(Acut));

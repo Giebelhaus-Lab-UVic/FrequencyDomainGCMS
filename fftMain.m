@@ -1,6 +1,6 @@
 function [dataOut] = fftMain(dataIn,plt,opts)
-% Denoises two-dimensional gas chromatography data in the frequency domain 
-% using a user-specified selection of Butterworth lowpass filtering, 
+% Denoises one- or two-dimensional gas chromatography data in the frequency 
+% domain using a user-specified selection of Butterworth lowpass filtering, 
 % Butterworth band-stop fitering, and/or the fitting of an exponential
 % function to the data. 
 % dataIn is a structure with the following fields:
@@ -9,6 +9,7 @@ function [dataOut] = fftMain(dataIn,plt,opts)
 % each column is a mass channel.
 % numScans = total number of acquisitions
 % dataRate = acquisition rate (in Hz or spectra/s)
+% modTime = modulation time in seconds; must be 0 or omitted for 1D data.
 arguments (Input)
     dataIn struct
     plt 

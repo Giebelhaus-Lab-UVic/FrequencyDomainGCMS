@@ -42,7 +42,7 @@ if opts.low
     Wnl = opts.cutoff/(fs/2);           % Normalize cutoff frequency
 end
 
-% --- Step 3: Apply filters modulation-by-modulation
+% --- Step 3: Apply filters modulation-by-modulation.
 
 dim1 = szTens(1);
 specDataOut = zeros(numMods*dim1, szTens(3));
@@ -54,7 +54,7 @@ for ii = 1:numMods
     specDataOut(ind,:) = specDataFFT;
 end
 
-% --- Step 4: Update fields in data structure
+% --- Step 4: Update fields in data structure.
 
 dataOut = dataIn;
 ticBW = sum(specDataOut, 2);
