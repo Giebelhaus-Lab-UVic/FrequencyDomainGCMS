@@ -4,12 +4,12 @@ function [fftTIC_expMod, fftSD_expMod] = expModFFT(dataIn)
 
 % --- Step 1: Compute the FFT of the input data. 
 
-fftTIC = fft(dataIn.tic); 
+fftTIC = fft(dataIn.Tic); 
 
-sz = size(dataIn.specdata);                                 
+sz = size(dataIn.Spec);                                 
 specdata_ffted = zeros(sz(1), sz(2));
 for page = 1:sz(2)                  % Preallocate the specdata_ffted
-    specdata_ffted(:,page) = fft(dataIn.specdata(:,page));
+    specdata_ffted(:,page) = fft(dataIn.Spec(:,page));
 end
 
 % --- Step 2: Locate maxima of FFT signals with a minimum distance of 1000.
@@ -27,7 +27,7 @@ end
 expOfBestFit = fit(locationPeak, intensityPeak, 'exp1');
 
 
-for i = 1:sz(2)                     % Repeat for specdata
+for i = 1:sz(2)                     % Repeat for Spec
     [tempIntentSpecData, tempLocPeak] = findpeaks(abs(specdata_ffted(:,i)), 'MinPeakDistance', 1000);
     if size(tempIntentSpecData, 1) >= 40 
          tempIntentSpecData = tempIntentSpecData(1:40);
@@ -48,7 +48,7 @@ for i = 1:sz(2)                     % Repeat for specdata
 
 % --- Step 4: Generate the independent variables (number of acquisitions).
 
-xvals = 1:size(dataIn.tic, 1);
+xvals = 1:size(dataIn.Tic, 1);
 
 % --- Step 5: Calculate the function.
 

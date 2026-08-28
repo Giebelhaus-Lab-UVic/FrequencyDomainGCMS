@@ -4,12 +4,12 @@ function [dataOut] = fftMain(dataIn,plt,opts)
 % Butterworth band-stop fitering, and/or the fitting of an exponential
 % function to the data. 
 % dataIn is a structure with the following fields:
-% tic = vector of total ion count data.
-% specdata = matrix of spectral data, where each row is an acquisition and 
+% Tic = vector of total ion count data.
+% Spec = matrix of spectral data, where each row is an acquisition and 
 % each column is a mass channel.
-% numScans = total number of acquisitions
-% dataRate = acquisition rate (in Hz or spectra/s)
-% modTime = modulation time in seconds; must be 0 or omitted for 1D data.
+% Scans = total number of acquisitions
+% Rate = acquisition rate (in Hz or spectra/s)
+% ModPeriod = modulation period in seconds; must be 0 or omitted for 1D data.
 arguments (Input)
     dataIn struct
     plt 
@@ -41,30 +41,30 @@ end
 % --- Step 2: Apply exponential fit if applicable.
 
 if opts.exp
-    if ~isfield(dataIn, 'tic')
-        dataIn.tic = sum(dataIn.specdata,2);
+    if ~isfield(dataIn, 'Tic')
+        dataIn.Tic = sum(dataIn.Spec,2);
     end
 
     [etic,espec] = expModFFT(dataOut);  % Scale TIC and specdata to the 
     ietic = abs(ifft(etic));            % size of the original data
     iespec = abs(ifft(espec));
-    max_in = max(dataIn.tic);
-    loc_max = dataIn.tic==max_in;
+    max_in = max(dataIn.Tic);
+    loc_max = dataIn.Tic==max_in;
     scaletic = ietic * max_in/ietic(loc_max);
-    max_in_spec = max(dataIn.specdata(:));
-    loc_smax = dataIn.specdata(:)==max_in_spec;
+    max_in_spec = max(dataIn.Spec(:));
+    loc_smax = dataIn.Spec(:)==max_in_spec;
     flat_spec = iespec(:);
     scalespec = iespec * max_in_spec/flat_spec(loc_smax);
 
-    dataOut.specdata = scalespec;       % Update output structure
-    dataOut.tic = scaletic;
+    dataOut.Spec = scalespec;       % Update output structure
+    dataOut.Tic = scaletic;
  
 end
 
 % --- Step 3: Plot data before and after denoising if applicable. 
 
 if plt
-    if ~isfield(dataIn, 'modTime') || dataIn.modTime == 0 
+    if ~isfield(dataIn, 'ModPeriod') || dataIn.ModPeriod == 0 
         plotChrom(dataIn,1,'Before Denoising');
         plotChrom(dataOut,1, 'After Denoising');
     else     

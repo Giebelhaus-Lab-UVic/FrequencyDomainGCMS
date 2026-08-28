@@ -21,7 +21,7 @@ numMods = szTens(2);
 % --- Step 2: Normalize frequencies to Nyquist frequency.
 
 Wns = [];                                   
-fs = dataIn.dataRate;                   % Obtain sampling rate
+fs = dataIn.Rate;                       % Obtain sampling rate
 
 if opts.stop
     upLim = zeros(1, length(opts.notches)); 
@@ -58,7 +58,7 @@ end
 
 dataOut = dataIn;
 ticBW = sum(specDataOut, 2);
-dataOut.specdata = specDataOut;
-dataOut.tic = ticBW;
+dataOut.Spec = specDataOut;
+dataOut.Tic = ticBW;
 
 end

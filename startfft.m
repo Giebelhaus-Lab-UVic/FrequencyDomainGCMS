@@ -3,8 +3,8 @@ function startfft(dstruc, plt,fft_)
 % fft.
 
 if fft_
-    ftic = fft(dstruc.tic);
-    spec = dstruc.specdata;
+    ftic = fft(dstruc.Tic);
+    spec = dstruc.Spec;
     sz = size(spec);
     fspec = zeros(sz(1), sz(2));
 
@@ -13,13 +13,13 @@ if fft_
   %         fspec(:,i) = fft(spec(:,i));
  %   end
 else
-    ftic = dstruc.tic;
+    ftic = dstruc.Tic;
 %    fspec = dstruc.specdata;
 end
 if plt
     fig= figure;
     N = length(ftic);
-    fs = dstruc.dataRate;
+    fs = dstruc.Rate;
     fax_bins = 0 : N-1;
     fax_hz = fax_bins*fs/N; %frequency axis in Hz
     N_2 = floor(N/2);

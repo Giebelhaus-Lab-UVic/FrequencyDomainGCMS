@@ -1,10 +1,10 @@
-function [tensOut] = makeTensor(pegIn)
+function [tensOut] = makeTensor(struc)
 % Folds one- and two-dimensional gas chromatography data into a tensor.
 
 try
-    tensOut = reshape(pegIn.specdata, pegIn.dataRate*pegIn.modTime, (pegIn.numScans)/(pegIn.dataRate*pegIn.modTime), []);
+    tensOut = reshape(struc.Spec, struc.Rate*struc.ModPeriod, (struc.Scans)/(struc.Rate*struc.ModPeriod), []);
 catch
-    tensOut = reshape(pegIn.specdata,size(pegIn.specdata,1),1,size(pegIn.specdata,2));
+    tensOut = reshape(struc.Spec,size(struc.Spec,1),1,size(struc.Spec,2));
 end
 
 end
