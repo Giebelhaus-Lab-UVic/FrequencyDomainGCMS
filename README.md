@@ -13,8 +13,8 @@ Download coding files from repository and unzip. Use fftMain.m to apply desired 
 
 ### 2.1 Inputs
 * ****: . 
-* **plt**: Optional; binary input (0/1) to indicate plotting (1) or no plotting (1) of peak. Default set to 1.
-* **bwstop**: Optional; binary input (0/1) to indicate peak decomposition (1) or no peak decomposotion (0). Default set to 0.
+* **plt**: Optional; 
+* **bwstop**: Optional; 
 * **bwlow**:
 * **exp**:
 * **
