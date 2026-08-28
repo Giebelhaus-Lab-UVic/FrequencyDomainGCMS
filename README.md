@@ -20,4 +20,4 @@ Download coding files from repository and unzip. Use fftMain.m to apply desired 
 * **
 
 ### 2.2 Outputs
-* **out_table**: Table consisting of peak paramaters: Major axis length, Minor axis length, Orientation angle, Skew magnitude, Skew(x), Skew(y), Major B/A raio, Minor B/A 
+* **dataOut**: 
