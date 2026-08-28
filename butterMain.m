@@ -29,8 +29,8 @@ if opts.stop
 
     % Prepare notches according to specified width
     for i = 1:length(opts.notches)      
-        upLim(i) = opts.notches(i) + opts.bw; 
-        dwnLim(i) = opts.notches(i) - opts.bw;
+        upLim(i) = opts.notches(i) + opts.bw/2; 
+        dwnLim(i) = opts.notches(i) - opts.bw/2;
     end
 
     edges = sort([upLim dwnLim]); 
