@@ -12,12 +12,16 @@ These files encode for an algorithm produced in MATLAB R2025a that enhances and 
 Download coding files from repository and unzip. Use fftMain.m to apply desired operations. 
 
 ### 2.1 Inputs
-* ****: . 
-* **plt**: Optional; 
-* **bwstop**: Optional; 
-* **bwlow**:
-* **exp**:
-* **
+* **dataIn**: Data structure containing the following fieldnames: : Rate, sampling frequency (spectra per second); Spec, an *M*×*N* spectrum matrix where *M* is scans and *N* is masses; numScans, number of scans; and ModPeriod, the modulation period.
+* **plt**:  Binary input (0/1) to indicate plotting (1) or no plotting (0) of peak.
+* **bwstop**: Optional; binary input (0/1) to indicate application of band-stop filter (1). Default 0.
+* **bwlow**: Optional; binary input (0/1) to indicate application of lowpass filter (1). Default 0.
+* **exp**: Optional; binary input (0/1) to indicate application of exponential fit (1). Default 0.
+* **width**: Optional; width of notches to be filtered. Required only for band-stop filter, default empty.
+* **notches** Optional; list of frequencies to be notched. Required only for band-stop filter, default empty.
+* **stop_ordr** Optional; order of band-stop filter. Required only for band-stop filter, default empty.
+* **low_ordr** Optional; order of lowpass filter. Required only for lowpass filter, default empty.
+* **cutoff** Optional; frequency of which to remove all frequencies above. Required only for lowpass filter, default empty.
 
 ### 2.2 Outputs
-* **dataOut**: 
+* **dataOut**: Data structure in same form as input containing cleaned data.
